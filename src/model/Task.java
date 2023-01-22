@@ -1,14 +1,23 @@
 package model;
 
+import static model.Task.statusList.NEW;
+
 public class Task {
     private int id;
     private String name;
-    private   String description;
-    private   String status;
+    private String description;
+    private statusList status;
+
+    public enum statusList {
+        NEW,
+        IN_PROGRESS,
+        DONE,
+    }
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -27,13 +36,22 @@ public class Task {
     public void setDescription(String description) {
         this.description = description;
     }
-    public String getStatus() {
+
+    public statusList getStatus() {
         return status;
     }
-    public void setStatus(String status) {
+
+    public void setStatus(statusList status) {
         this.status = status;
     }
-    public Task( String name, String description, String status) {
+
+    public Task(String name, String description) {
+        this.name = name;
+        this.description = description;
+        status = NEW;
+    }
+
+    public Task(String name, String description, statusList status) {
         this.name = name;
         this.description = description;
         this.status = status;
