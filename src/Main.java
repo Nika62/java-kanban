@@ -1,9 +1,10 @@
-import ru.javakanban.Managers;
-import ru.javakanban.interfaces.TaskManager;
+import ru.javakanban.*;
+import ru.javakanban.interfaces.*;
 import ru.javakanban.model.*;
 
 import static ru.javakanban.model.Task.StatusList.DONE;
 import static ru.javakanban.model.Task.StatusList.IN_PROGRESS;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();

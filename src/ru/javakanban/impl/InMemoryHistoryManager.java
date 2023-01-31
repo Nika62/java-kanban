@@ -1,9 +1,9 @@
 package ru.javakanban.impl;
 
-import ru.javakanban.interfaces.HistoryManager;
-import ru.javakanban.model.Task;
+import ru.javakanban.interfaces.*;
+import ru.javakanban.model.*;
 
-import java.util.ArrayList;
+import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private static ArrayList<Task> historyTasks = new ArrayList<>();

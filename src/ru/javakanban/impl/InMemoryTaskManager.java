@@ -1,7 +1,7 @@
 package ru.javakanban.impl;
 
-import ru.javakanban.Managers;
-import ru.javakanban.interfaces.TaskManager;
+import ru.javakanban.*;
+import ru.javakanban.interfaces.*;
 import ru.javakanban.model.*;
 
 import java.util.*;
