@@ -1,14 +1,14 @@
-package model;
+package ru.javakanban.model;
 
-import static model.Task.statusList.NEW;
+import static ru.javakanban.model.Task.StatusList.NEW;
 
 public class Task {
     private int id;
     private String name;
     private String description;
-    private statusList status;
+    private StatusList status;
 
-    public enum statusList {
+    public enum StatusList {
         NEW,
         IN_PROGRESS,
         DONE,
@@ -21,11 +21,9 @@ public class Task {
     public void setId(int id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -37,11 +35,11 @@ public class Task {
         this.description = description;
     }
 
-    public statusList getStatus() {
+    public StatusList getStatus() {
         return status;
     }
 
-    public void setStatus(statusList status) {
+    public void setStatus(StatusList status) {
         this.status = status;
     }
 
@@ -51,7 +49,7 @@ public class Task {
         status = NEW;
     }
 
-    public Task(String name, String description, statusList status) {
+    public Task(String name, String description, StatusList status) {
         this.name = name;
         this.description = description;
         this.status = status;
@@ -59,7 +57,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "model.Task{" +
+        return "ru.javakanban.impl.model.Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
