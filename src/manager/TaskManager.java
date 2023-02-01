@@ -1,6 +1,6 @@
-package ru.javakanban.interfaces;
+package manager;
 
-import ru.javakanban.model.*;
+import tasks.*;
 
 import java.util.*;
 

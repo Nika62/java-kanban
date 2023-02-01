@@ -1,6 +1,6 @@
-package ru.javakanban.model;
+package tasks;
 
-import static ru.javakanban.model.Task.StatusList.NEW;
+import static tasks.Task.StatusList.NEW;
 
 public class Task {
     private int id;
@@ -57,7 +57,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "ru.javakanban.impl.model.Task{" +
+        return "Task{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +

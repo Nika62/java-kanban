@@ -1,6 +1,6 @@
-package ru.javakanban.model;
+package tasks;
 
-import java.util.ArrayList;
+import java.util.*;
 public class Epic extends Task {
     private ArrayList<Integer> subtasksId = new ArrayList();
     public Epic(String name, String description) {
@@ -14,7 +14,7 @@ public class Epic extends Task {
     }
     @Override
     public String toString() {
-        return "ru.javakanban.impl.model.Epic{" +
+        return "Epic{" +
                 "id=" + getId() +
                 ", name='" + getName() + '\'' +
                 ", description='" + getDescription() + '\'' +

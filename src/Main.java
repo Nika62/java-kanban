@@ -1,9 +1,8 @@
-import ru.javakanban.*;
-import ru.javakanban.interfaces.*;
-import ru.javakanban.model.*;
+import manager.*;
+import tasks.*;
 
-import static ru.javakanban.model.Task.StatusList.DONE;
-import static ru.javakanban.model.Task.StatusList.IN_PROGRESS;
+import static tasks.Task.StatusList.DONE;
+import static tasks.Task.StatusList.IN_PROGRESS;
 
 public class Main {
     public static void main(String[] args) {

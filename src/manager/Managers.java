@@ -1,7 +1,4 @@
-package ru.javakanban;
-
-import ru.javakanban.impl.*;
-import ru.javakanban.interfaces.*;
+package manager;
 
 public class Managers {
     public static TaskManager getDefault() {

@@ -1,12 +1,10 @@
-package ru.javakanban.impl;
+package manager;
 
-import ru.javakanban.*;
-import ru.javakanban.interfaces.*;
-import ru.javakanban.model.*;
+import tasks.*;
 
 import java.util.*;
 
-import static ru.javakanban.model.Task.StatusList.*;
+import static tasks.Task.StatusList.*;
 
 public class InMemoryTaskManager implements TaskManager {
     int taskId = 0;

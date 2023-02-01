@@ -1,4 +1,4 @@
-package ru.javakanban.model;
+package tasks;
 public class Subtask extends Task {
     private int parentId;
     public int getParentId() {
@@ -21,7 +21,7 @@ public class Subtask extends Task {
     }
     @Override
     public String toString() {
-        return "ru.javakanban.impl.model.Subtask{" +
+        return "Subtask{" +
                 " parentId= " + parentId + '\'' +
                 ", id= " + getId() + '\'' +
                 ", name='" + getName() + '\'' +

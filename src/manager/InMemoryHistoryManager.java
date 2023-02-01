@@ -1,12 +1,11 @@
-package ru.javakanban.impl;
+package manager;
 
-import ru.javakanban.interfaces.*;
-import ru.javakanban.model.*;
+import tasks.*;
 
 import java.util.*;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private static ArrayList<Task> historyTasks = new ArrayList<>();
+    private static LinkedList<Task> historyTasks = new LinkedList<>();
 
     @Override
     public void add(Task task) {
@@ -19,7 +18,8 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public LinkedList<Task> getHistory() {
+
         return historyTasks;
     }
 }
