@@ -1,6 +1,6 @@
 package tasks;
 
-import static tasks.Task.StatusList.NEW;
+import static tasks.Task.StatusList.*;
 
 public class Task {
     private int id;
