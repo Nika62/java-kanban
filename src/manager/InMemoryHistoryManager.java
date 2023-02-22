@@ -5,10 +5,9 @@ import tasks.*;
 import java.util.*;
 public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
     private static InMemoryHistoryManager<Task> historyTasks = new InMemoryHistoryManager<>();
-    public static HashMap<Integer, Node<Task>> idAndNode = new HashMap<>();
+    private static HashMap<Integer, Node<Task>> nodeMap = new HashMap<>();
     private Node<Task> headNode;
     private Node<Task> lastNode;
-    private int size = 0;
 
     public void linkLast(Task task) {
 
@@ -21,12 +20,11 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
             oldLastNode.setNext(lastNode);
             lastNode.setPrev(oldLastNode);
         }
-        size++;
     }
 
     private ArrayList<Task> getTasks() {
         ArrayList<Task> arrayList = new ArrayList<>();
-        if (size > 0) {
+        if (headNode != null) {
             arrayList.add(headNode.getDate());
             Node<Task> nextNode = headNode.getNext();
 
@@ -56,18 +54,17 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
             lastNode.setNext(null);
             node.setPrev(null);
         }
-        size--;
+        nodeMap.remove(node.getDate().getId());
     }
 
     @Override
     public void add(Task task) {
         int taskId = task.getId();
-        boolean isContainsTask = idAndNode.containsKey(taskId);
-        if (isContainsTask) {
+        if (nodeMap.containsKey(taskId)) {
             remove(taskId);
         }
         historyTasks.linkLast(task);
-        idAndNode.put(taskId, historyTasks.lastNode);
+        nodeMap.put(taskId, historyTasks.lastNode);
 
     }
 
@@ -79,12 +76,9 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        boolean isId = idAndNode.get(id) != null ? true : false;
-
-        if (isId) {
-            Node<Task> nodeForDelete = idAndNode.get(id);
+        if (nodeMap.get(id) != null) {
+            Node<Task> nodeForDelete = nodeMap.get(id);
             historyTasks.removeNode(nodeForDelete);
-            idAndNode.remove(id);
         }
     }
 }

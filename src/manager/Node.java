@@ -13,6 +13,14 @@ public class Node<T extends Task> {
         this.next = null;
     }
 
+    public Node(Task dateHead, Task dateLast) {
+        Node<Task> headNode = new Node<Task>(dateHead);
+        Node<Task> lastNode = new Node<Task>(dateLast);
+        headNode.next = lastNode;
+        lastNode.prev = headNode;
+    }
+
+
     public void setPrev(Node<Task> prev) {
         this.prev = prev;
     }
