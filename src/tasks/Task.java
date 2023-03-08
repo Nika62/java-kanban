@@ -55,14 +55,13 @@ public class Task {
         this.status = status;
     }
 
-    @Override
+   @Override
     public String toString() {
-        return "Task{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", status='" + status + '\'' +
-                '}';
-    }
+       return "Task{" +
+               "id=" + id +
+               ", description='" + description + '\'' +
+               ", status='" + status + '\'' +
+               '}';
+   }
 
 }

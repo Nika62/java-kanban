@@ -3,9 +3,9 @@ package manager;
 import tasks.*;
 
 public class Node<T extends Task> {
-    private Task date;
-    private Node<Task> prev;
-    private Node<Task> next;
+    private tasks.Task date;
+    private Node<tasks.Task> prev;
+    private Node<tasks.Task> next;
 
     public Node(Task date) {
         this.date = date;
@@ -29,7 +29,7 @@ public class Node<T extends Task> {
         this.next = next;
     }
 
-    public Task getDate() {
+    public tasks.Task getDate() {
         return date;
     }
 

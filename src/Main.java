@@ -1,6 +1,8 @@
 import manager.*;
 import tasks.*;
 
+import java.io.*;
+
 import static tasks.Task.StatusList.*;
 
 public class Main {
@@ -54,6 +56,31 @@ public class Main {
 
         manager.deleteEpicById(1);
         System.out.println(m.getHistory() + " (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ \n");
+
+        FileBackedTasksManager f = new FileBackedTasksManager(new File("./fileBackedTasksManager.csv"));
+
+        f.saveTaskAndEpic(cookSoup);
+
+        f.saveTaskAndEpic(toHealCat);
+
+
+        f.saveSubtask(cookBroth, cookSoup);
+        f.saveSubtask(addNoodles, cookSoup);
+        f.saveSubtask(addDill, cookSoup);
+        f.saveTaskAndEpic(walkingDog);
+        f.getEpicById(2);
+        f.getEpicById(1);
+        f.getSubtasksById(3);
+        f.getSubtasksById(4);
+        f.getEpicById(2);
+        f.getSubtasksById(5);
+        f.getTaskById(6);
+        f.getSubtasksById(4);
+        f.getEpicById(1);
+        f.getSubtasksById(3);
+
+
+        f.save();
 
 
     }
