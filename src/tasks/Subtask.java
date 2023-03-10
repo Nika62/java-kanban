@@ -1,6 +1,10 @@
 package tasks;
+
+import static tasks.TypeTask.*;
+
 public class Subtask extends Task {
-    private int parentId;
+    protected int parentId;
+
     public int getParentId() {
         return parentId;
     }
@@ -17,16 +21,10 @@ public class Subtask extends Task {
     public Subtask(int parentId, String name, String description) {
         super(name, description);
         this.parentId = parentId;
-
     }
+
     @Override
     public String toString() {
-        return "Subtask{" +
-                " parentId= " + parentId + '\'' +
-                ", id= " + getId() + '\'' +
-                ", name='" + getName() + '\'' +
-                ", description='" + getDescription() + '\'' +
-                ", status='" + getStatus() + '\'' +
-                '}';
+        return id + "," + SUBTASK + "," + name + "," + description + "," + status + "," + parentId;
     }
 }

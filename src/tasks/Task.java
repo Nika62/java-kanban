@@ -1,12 +1,13 @@
 package tasks;
 
 import static tasks.Task.StatusList.*;
+import static tasks.TypeTask.*;
 
 public class Task {
-    private int id;
-    private String name;
-    private String description;
-    private StatusList status;
+    protected int id;
+    protected String name;
+    protected String description;
+    protected StatusList status;
 
     public enum StatusList {
         NEW,
@@ -55,13 +56,16 @@ public class Task {
         this.status = status;
     }
 
-   @Override
+    public Task(int id, String name, String description, StatusList status) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    @Override
     public String toString() {
-       return "Task{" +
-               "id=" + id +
-               ", description='" + description + '\'' +
-               ", status='" + status + '\'' +
-               '}';
-   }
+        return id + "," + TASK + "," + name + "," + description + "," + status;
+    }
 
 }
