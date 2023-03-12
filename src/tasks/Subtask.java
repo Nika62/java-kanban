@@ -23,6 +23,11 @@ public class Subtask extends Task {
         this.parentId = parentId;
     }
 
+    public Subtask(int id, String name, String description, StatusList status, int parentId) {
+        super(id, name, description, status);
+        this.parentId = parentId;
+    }
+
     @Override
     public String toString() {
         return id + "," + SUBTASK + "," + name + "," + description + "," + status + "," + parentId;

@@ -9,9 +9,9 @@ import static tasks.Task.StatusList.*;
 
 public class InMemoryTaskManager implements TaskManager {
     protected int taskId = 0;
-    protected final HashMap<Integer, Epic> listEpics = new HashMap<>();
-    protected final HashMap<Integer, Task> listTasks = new HashMap<>();
-    protected final HashMap<Integer, Subtask> listSubtasks = new HashMap<>();
+    protected static final HashMap<Integer, Epic> listEpics = new HashMap<>();
+    protected static final HashMap<Integer, Task> listTasks = new HashMap<>();
+    protected static final HashMap<Integer, Subtask> listSubtasks = new HashMap<>();
     static HistoryManager historyManager = Managers.getDefaultHistory();
 
     public HashMap<Integer, Epic> getListEpics() {
@@ -46,7 +46,7 @@ public class InMemoryTaskManager implements TaskManager {
         assignId(subtask);
         epic.getSubtasksId().add(subtask.getId());
         listSubtasks.put(subtask.getId(), subtask);
-        defineStatusEpic(epic);
+        updateEpic(epic);
     }
     @Override
     public ArrayList<Task> getListAllEpic() {
@@ -98,9 +98,9 @@ public class InMemoryTaskManager implements TaskManager {
             listSubtasks.clear();
             for (int i = 1; i < listEpics.size(); i++) {
                 if (!listEpics.get(i).equals(null)) {
-                    Epic epic = (Epic) listEpics.get(i);
+                    Epic epic = listEpics.get(i);
                     epic.getSubtasksId().clear();
-                    defineStatusEpic(epic);
+                    updateEpic(epic);
                 }
             }
         }
@@ -168,7 +168,7 @@ public class InMemoryTaskManager implements TaskManager {
             listSubtasks.remove(id);
             Epic epic = (Epic) listEpics.get(epicId);
             epic.getSubtasksId().remove((Object) subtask.getId());
-            defineStatusEpic(epic);
+            updateEpic(epic);
             historyManager.remove(id);
         }
     }

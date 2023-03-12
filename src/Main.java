@@ -7,15 +7,15 @@ import static tasks.Task.StatusList.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
-        TaskManager manager = Managers.getDefault();
-        HistoryManager m = Managers.getDefaultHistory();
+      TaskManager manager = Managers.getDefault();
+      HistoryManager m = Managers.getDefaultHistory();
 
-        Epic cookSoup = new Epic("Приготовить суп", "Суп куриный с лапшой");
+      Epic cookSoup = new Epic("Приготовить суп", "Суп c лапшой и грибами");
         manager.saveTaskAndEpic(cookSoup);
         Subtask cookBroth = new Subtask(cookSoup.getId(), "Сварить бульон", "Бульон варить 40 мин.", DONE);
-        Subtask addNoodles = new Subtask(cookSoup.getId(), "Добавить лапшу", "Добавить 50 г. домашней лапши. Варить на среднем огне 10 мин.");
-        Subtask addDill = new Subtask(cookSoup.getId(), "Добавить зелень", "Добавить зелень и довести до кипения.");
-        Epic toHealCat = new Epic("Лечить кота", "Лечить кота Бaрсика от насморка");
+      Subtask addNoodles = new Subtask(cookSoup.getId(), "Добавить лапшу", "Добавить 50 г. домашней лапши. Варить на среднем огне 10 мин.");
+      Subtask addDill = new Subtask(cookSoup.getId(), "Добавить укроп", "Добавить зелень и довести до кипения.");
+      Epic toHealCat = new Epic("Лечить кота", "Лечить кота Бaрсика от насморка");
         manager.saveTaskAndEpic(toHealCat);
         Task walkingDog = new Task("Выгулять собаку", "Выгуливать собаку на улице 30-40 мин.");
 
@@ -56,16 +56,6 @@ public class Main {
 
         manager.deleteEpicById(1);
         System.out.println(m.getHistory() + " (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ \n");
-
-        FileBackedTasksManager f = new FileBackedTasksManager(new File("./fileBackedTasksManager.csv"));
-        f.saveTaskAndEpicInFile(cookSoup);
-        f.saveTaskAndEpicInFile(toHealCat);
-        f.saveSubtaskInFile(cookBroth, cookSoup);
-        f.saveSubtaskInFile(addNoodles, cookSoup);
-        f.saveSubtaskInFile(addDill, cookSoup);
-        f.saveTaskAndEpicInFile(walkingDog);
-        f.updateTaskInFile(new Task(walkingDog.getId(), "iiii", "jkjkjkjkj", DONE));
-        f.updateSubtaskInFile(addDill);
 
 
     }
