@@ -4,16 +4,17 @@ import tasks.*;
 
 import java.io.*;
 import java.nio.charset.*;
+import java.nio.file.*;
 import java.util.*;
 
 import static tasks.Task.StatusList.*;
+import static tasks.TypeTask.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    protected File savingFileManager = null;
+    protected final File file;
 
     public FileBackedTasksManager(File file) {
-        this.savingFileManager = file;
-
+        this.file = file;
     }
 
     @Override
@@ -30,7 +31,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
 
     @Override
     public void updateEpic(Epic epic) {
-        super.updateTask(epic);
+        super.updateEpic(epic);
         save();
     }
 
@@ -61,24 +62,25 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     @Override
-    public Subtask getSubtasksById(int id) {
-        Subtask subtask = (Subtask) super.getSubtasksById(id);
+    public Subtask getSubtaskById(int id) {
+        Subtask subtask = (Subtask) super.getSubtaskById(id);
         save();
         return subtask;
     }
 
     private void writeHeader() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(savingFileManager, StandardCharsets.UTF_8))) {
-            writer.write("id,type,name,description,status,listSubtasks/parentId" + "\r\n");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+            String header = "id,type,name,description,status,listSubtasks/parentId";
+            writer.write(header + System.lineSeparator());
 
         } catch (IOException e) {
             throw new ManagerSaveException("Произошла ошибка при записи в файл");
         }
     }
 
-    public void save() {
+    private void save() {
         writeHeader();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(savingFileManager, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
             saveListTasksInFile(writer, listTasks);
             saveListTasksInFile(writer, listEpics);
             saveListTasksInFile(writer, listSubtasks);
@@ -93,7 +95,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     private void saveListTasksInFile(BufferedWriter writer, HashMap<Integer, ? extends Task> list) throws IOException {
         if (!list.isEmpty()) {
             for (int key : list.keySet()) {
-                writer.append(list.get(key).toString() + "\r\n");
+                writer.append(list.get(key).toString() + System.lineSeparator());
             }
         }
     }
@@ -120,17 +122,15 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
                     continue;
                 }
 
-                if (taskString[0].equals("id")) {
-                    continue;
-                } else if (taskString[1].equals("EPIC")) {
+                if (taskString[1].equals(EPIC.toString())) {
                     listEpics.put(Integer.valueOf(taskString[0]), toEpic(taskString));
 
-                } else if (taskString[1].equals("SUBTASK")) {
+                } else if (taskString[1].equals(SUBTASK.toString())) {
                     listSubtasks.put(Integer.valueOf(taskString[0]), toSubtask(taskString));
 
-                } else if (taskString[1].equals("TASK")) {
+                } else if (taskString[1].equals(TASK.toString())) {
                     listTasks.put(Integer.valueOf(taskString[0]), toTask(taskString));
-                } else {
+                } else if (!taskString[0].equals("id")) {
                     getHistoryFromFile(taskString);
                 }
 
@@ -153,24 +153,24 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
 
-    public static Task.StatusList getStatus(String string) {
+    private static Task.StatusList getStatus(String string) {
         Task.StatusList status = null;
 
-        if (string.equals("NEW")) {
+        if (string.equals(NEW.toString())) {
             status = NEW;
-        } else if (string.equals("IN_PROGRESS")) {
+        } else if (string.equals(IN_PROGRESS.toString())) {
             status = IN_PROGRESS;
-        } else if (string.equals("DONE")) {
+        } else if (string.equals(DONE.toString())) {
             status = DONE;
         }
         return status;
     }
 
-    public static Task toTask(String[] taskString) {
+    private static Task toTask(String[] taskString) {
         return new Task(Integer.valueOf(taskString[0]), taskString[2], taskString[3], getStatus(taskString[4]));
     }
 
-    public static Epic toEpic(String[] taskString) {
+    private static Epic toEpic(String[] taskString) {
 
         ArrayList<Integer> subtaskId = new ArrayList<>();
         if (taskString.length > 5) {
@@ -187,7 +187,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         return new Epic(Integer.valueOf(taskString[0]), taskString[2], taskString[3], getStatus(taskString[4]), subtaskId);
     }
 
-    public static Subtask toSubtask(String[] taskString) {
+    private static Subtask toSubtask(String[] taskString) {
 
         return new Subtask(Integer.valueOf(taskString[0]), taskString[2], taskString[3], getStatus(taskString[4]), Integer.valueOf(taskString[5]));
     }
@@ -208,11 +208,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         f.getTaskById(task1.getId());
         f.getEpicById(epic1.getId());
         f.getEpicById(epic2.getId());
-        f.getSubtasksById(sub1.getId());
-        f.getSubtasksById(sub2.getId());
+        f.getSubtaskById(sub1.getId());
+        f.getSubtaskById(sub2.getId());
 
 
-        loadFromFile(new File("./fileBackedTasksManager.csv"));
+        loadFromFile(Path.of("./fileBackedTasksManager.csv").toFile());
 
         System.out.println(listEpics + "\n" + listSubtasks + "\n" + listTasks + "\n" + historyManager.getHistory());
     }

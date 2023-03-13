@@ -27,7 +27,7 @@ public interface TaskManager<T extends Task> {
 
     T getEpicById(int id);
 
-    T getSubtasksById(int id);
+    T getSubtaskById(int id);
 
     void updateTask(Task task);
 

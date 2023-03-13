@@ -116,11 +116,13 @@ public class InMemoryTaskManager implements TaskManager {
         Managers.getDefaultHistory().add(listEpics.get(id));
         return listEpics.get(id);
     }
+
     @Override
-    public Task getSubtasksById(int id) {
+    public Task getSubtaskById(int id) {
         Managers.getDefaultHistory().add(listSubtasks.get(id));
         return listSubtasks.get(id);
     }
+
     @Override
     public void updateTask(Task task) {
         if (listTasks.containsKey(task.getId())) {
