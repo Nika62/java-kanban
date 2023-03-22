@@ -118,7 +118,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
             while (reader.ready()) {
 
                 String[] taskString = reader.readLine().split(",");
-                if (taskString[0].equals("")) {
+                if (taskString[0].isEmpty()) {
                     continue;
                 }
 
