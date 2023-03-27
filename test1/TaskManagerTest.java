@@ -19,7 +19,11 @@ class TaskManagerTest<T extends TaskManager> {
     void beforeEach() {
         task = new Task("test", "test", 30, LocalDateTime.of(2023, 01, 01, 0, 1));
         epic = new Epic("EPIC", "description EPIC");
-        subtask = new Subtask(3, "SUBTASK", "descr SUBTASK", 20, LocalDateTime.of(2023, 01, 01, 0, 50));
+        subtask = new Subtask(2, "SUBTASK", "descr SUBTASK", 20, LocalDateTime.of(2023, 01, 01, 0, 50));
+        m.saveTaskAndEpic(task);
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+
     }
 
     @AfterEach
@@ -31,7 +35,6 @@ class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldSaveTaskInTasksList() {
-        m.saveTaskAndEpic(task);
         ArrayList<Task> tasks = m.getListAllTasks();
         assertNotNull(tasks);
         assertEquals(m.getListAllTasks().get(0), task);
@@ -75,6 +78,20 @@ class TaskManagerTest<T extends TaskManager> {
         Subtask subNull = null;
         m.saveTaskAndEpic(subNull);
         assertTrue(m.getListAllEpic().isEmpty());
+    }
+
+    @Test
+    void shouldEpicInSubtask() {
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        assertEquals(subtask.getParentId(), epic.getId());
+    }
+
+    @Test
+    void shouldEpicWrongIdInSubtask() {
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        assertEquals(subtask.getParentId(), epic.getId());
     }
 
     @Test
@@ -235,12 +252,18 @@ class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldUpdateEpicTaskSubtaskNull() {
-        Epic epicN = null;
-        Subtask subN = null;
-        Task taskN = null;
-        m.updateEpic(epicN);
-        m.updateSubtask(subN);
-        m.updateTask(taskN);
+        m.saveTaskAndEpic(epic);
+        m.saveTaskAndEpic(task);
+        m.saveSubtask(subtask, epic);
+        epic = null;
+        task = null;
+        subtask = null;
+        m.updateEpic(epic);
+        m.updateSubtask(subtask);
+        m.updateTask(task);
+        assertNotNull(m.getListAllEpic().get(0));
+        assertNotNull(m.getListAllTasks().get(0));
+        assertNotNull(m.getListAllSubtasks().get(0));
     }
 
     @Test
@@ -305,19 +328,36 @@ class TaskManagerTest<T extends TaskManager> {
         assertEquals(epic.getSubtasks().get(1), sub2);
     }
 
+    void shouldGetEmptyListSubtasksOfEpic() {
+        m.saveTaskAndEpic(epic);
+        assertEquals(epic.getSubtasks().size(), 0);
+        assertTrue(epic.getSubtasks().isEmpty());
+    }
+
     @Test
     void shouldDefineStatusEpic() {
-        Subtask sub2 = new Subtask(1, "SUB2", "IUY7UYHUHUH", DONE, LocalDateTime.of(2023, 02, 01, 0, 50), 19, LocalDateTime.of(2023, 02, 01, 0, 50).plusMinutes(19), 3);
+        Subtask sub2 = new Subtask(1, "SUB2", "IUY7UYHUHUH", NEW, LocalDateTime.of(2023, 02, 01, 0, 50), 19, LocalDateTime.of(2023, 02, 01, 0, 50).plusMinutes(19), 3);
         m.saveTaskAndEpic(epic);
         assertEquals(epic.getStatus(), NEW);
-        subtask.setStatus(DONE);
+
+        subtask.setStatus(IN_PROGRESS);
         m.saveSubtask(subtask, epic);
-        assertEquals(epic.getStatus(), DONE);
-        sub2.setStatus(IN_PROGRESS);
-        m.saveSubtask(sub2, epic);
         assertEquals(epic.getStatus(), IN_PROGRESS);
-        m.deleteAllSubtasks();
+
+        subtask.setStatus(NEW);
+        m.saveSubtask(sub2, epic);
         assertEquals(epic.getStatus(), NEW);
+
+        subtask.setStatus(DONE);
+        sub2.setStatus(DONE);
+        m.updateEpic(epic);
+        assertEquals(epic.getStatus(), DONE);
+
+        subtask.setStatus(NEW);
+        m.updateEpic(epic);
+        assertEquals(epic.getStatus(), IN_PROGRESS);
+
+
     }
 
     @Test
@@ -332,4 +372,10 @@ class TaskManagerTest<T extends TaskManager> {
         assertEquals(m.getPrioritizedTasks().get(1), subtask);
         assertEquals(m.getPrioritizedTasks().get(2), sub2);
     }
+
+    @Test
+    void shouldEmptyGetPrioritizedTasks() {
+        assertEquals(m.getPrioritizedTasks().size(), 0);
+    }
+
 }

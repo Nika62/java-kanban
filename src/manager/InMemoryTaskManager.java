@@ -33,9 +33,25 @@ public class InMemoryTaskManager implements TaskManager {
         return listSubtasks;
     }
 
+    public void clearSortedList(Set<Task> set) {
+        sortedList.clear();
+
+    }
+
     protected int assignId(Task newTask) {
         newTask.setId(++taskId);
         return taskId;
+    }
+
+    protected void checkFreeTime(Task newTask) {
+        if (Objects.nonNull(newTask.getStartTime())) {
+            for (Task task : sortedList) {
+                if (newTask.getStartTime().equals(task.getEndTime())) {
+                    System.out.println("Задача не создана. Выбранное время занято.");
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     public List getPrioritizedTasks() {
@@ -66,11 +82,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void saveTaskAndEpic(Task task) {
         if (Objects.nonNull(task)) {
-            assignId(task);
             if (task instanceof Epic) {
+                assignId(task);
                 listEpics.put(task.getId(), (Epic) task);
                 defineStatusEpic((Epic) task);
             } else {
+                checkFreeTime(task);
+                assignId(task);
                 addToSortedList(task);
                 listTasks.put(task.getId(), task);
             }
@@ -80,7 +98,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void saveSubtask(Subtask subtask, Epic epic) {
-        if (Objects.nonNull(subtask) && Objects.nonNull(epic)) {
+        if (Objects.nonNull(subtask) && Objects.nonNull(epic) && getListAllEpic().contains(epic) && subtask.getParentId() == epic.getId()) {
+            checkFreeTime(subtask);
             assignId(subtask);
             subtask.setParentId(epic.getId());
             addToSortedList(subtask);
@@ -127,7 +146,13 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Task> deleteAllTasks() {
         if (!listTasks.isEmpty()) {
+            for (Task task : listTasks.values()) {
+                if (sortedList.contains(task)) {
+                    sortedList.remove(task);
+                }
+            }
             listTasks.clear();
+
         }
         return listTasks;
     }
@@ -146,11 +171,16 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public HashMap<Integer, Subtask> deleteAllSubtasks() {
         if (!listSubtasks.isEmpty()) {
-            listSubtasks.clear();
             for (Epic epic : listEpics.values()) {
                 epic.getSubtasks().clear();
                 updateEpic(epic);
             }
+            for (Subtask subtask : listSubtasks.values()) {
+                if (sortedList.contains(subtask)) {
+                    sortedList.remove(subtask);
+                }
+            }
+            listSubtasks.clear();
         }
         return listSubtasks;
     }
@@ -183,6 +213,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateTask(Task task) {
         if (Objects.nonNull(task) && listTasks.containsKey(task.getId())) {
+            checkFreeTime(task);
             sortedList.remove(listTasks.get(task.getId()));
             sortedList.add(task);
             listTasks.put(task.getId(), task);
@@ -199,6 +230,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (Objects.nonNull(subtask) && listSubtasks.containsKey(subtask.getId())) {
+            checkFreeTime(subtask);
             sortedList.remove(listSubtasks.get(subtask.getId()));
             sortedList.add(subtask);
             listSubtasks.put(subtask.getId(), subtask);
@@ -213,17 +245,18 @@ public class InMemoryTaskManager implements TaskManager {
         if (listTasks.containsKey(id)) {
             listTasks.remove(id);
             historyManager.remove(id);
+            sortedList.remove(id);
         }
     }
     @Override
     public void deleteSubtaskById(int id) {
         if (listSubtasks.containsKey(id)) {
-            ;
             Epic epic = listEpics.get(listSubtasks.get(id).getParentId());
             epic.removeSubtask(listSubtasks.get(id));
             listSubtasks.remove(id);
             updateEpic(epic);
             historyManager.remove(id);
+            sortedList.remove(id);
         }
     }
     @Override

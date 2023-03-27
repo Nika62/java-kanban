@@ -2,7 +2,6 @@ import manager.*;
 import tasks.*;
 
 import java.io.*;
-import java.time.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -54,8 +53,6 @@ public class Main {
       System.out.println(m.getHistory() + " (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ \n");
       FileBackedTasksManager f = new FileBackedTasksManager(new File("./fileBackedTasksManager.csv"));
 
-      Subtask s = new Subtask(3, "SUBTASK", "descr SUBTASK", 20, LocalDateTime.of(2023, 01, 01, 0, 50));
-      manager.saveSubtask(s, cookSoup);
 
       System.out.println("___________" + manager.getPrioritizedTasks());
 
