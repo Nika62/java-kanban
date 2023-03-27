@@ -2,6 +2,7 @@ import manager.*;
 import tasks.*;
 
 import java.io.*;
+import java.time.*;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -9,16 +10,16 @@ public class Main {
       HistoryManager m = Managers.getDefaultHistory();
 
       Epic cookSoup = new Epic("Приготовить суп", "Суп c лапшой и грибами");
-        manager.saveTaskAndEpic(cookSoup);
-        //Subtask cookBroth = new Subtask(cookSoup.getId(), "Сварить бульон", "Бульон варить 40 мин.", DONE);
+      manager.saveTaskAndEpic(cookSoup);
+      Subtask cookBroth = new Subtask(cookSoup.getId(), "Сварить бульон", "Бульон варить 40 мин.");
       Subtask addNoodles = new Subtask(cookSoup.getId(), "Добавить лапшу", "Добавить 50 г. домашней лапши. Варить на среднем огне 10 мин.");
       Subtask addDill = new Subtask(cookSoup.getId(), "Добавить укроп", "Добавить зелень и довести до кипения.");
       Epic toHealCat = new Epic("Лечить кота", "Лечить кота Бaрсика от насморка");
-        manager.saveTaskAndEpic(toHealCat);
-        Task walkingDog = new Task("Выгулять собаку", "Выгуливать собаку на улице 30-40 мин.");
+      manager.saveTaskAndEpic(toHealCat);
+      Task walkingDog = new Task("Выгулять собаку", "Выгуливать собаку на улице 30-40 мин.");
 
-      ///manager.saveSubtask(cookBroth, cookSoup);
-        manager.saveSubtask(addNoodles, cookSoup);
+      manager.saveSubtask(cookBroth, cookSoup);
+      manager.saveSubtask(addNoodles, cookSoup);
       manager.saveSubtask(addDill, cookSoup);
       manager.saveTaskAndEpic(walkingDog);
 
@@ -49,9 +50,14 @@ public class Main {
       manager.deleteSubtaskById(3);
       System.out.println(m.getHistory() + " ଲ(ⓛ ω ⓛ)ଲ  \n");
 
-        manager.deleteEpicById(1);
-        System.out.println(m.getHistory() + " (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ \n");
+
+      System.out.println(m.getHistory() + " (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ \n");
       FileBackedTasksManager f = new FileBackedTasksManager(new File("./fileBackedTasksManager.csv"));
+
+      Subtask s = new Subtask(3, "SUBTASK", "descr SUBTASK", 20, LocalDateTime.of(2023, 01, 01, 0, 50));
+      manager.saveSubtask(s, cookSoup);
+
+      System.out.println("___________" + manager.getPrioritizedTasks());
 
 
     }

@@ -3,7 +3,7 @@ package manager;
 import tasks.*;
 
 public class Node<T extends Task> {
-    private tasks.Task date;
+    private Task date;
     private Node<tasks.Task> prev;
     private Node<tasks.Task> next;
 
@@ -27,6 +27,10 @@ public class Node<T extends Task> {
 
     public void setNext(Node<Task> next) {
         this.next = next;
+    }
+
+    public void setDate(Task date) {
+        this.date = date;
     }
 
     public tasks.Task getDate() {

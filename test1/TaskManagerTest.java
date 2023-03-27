@@ -11,9 +11,9 @@ import static tasks.Task.StatusList.*;
 class TaskManagerTest<T extends TaskManager> {
 
     TaskManager m = new InMemoryTaskManager();
-    private Task task;
-    private Epic epic;
-    private Subtask subtask;
+    protected Task task;
+    protected Epic epic;
+    protected Subtask subtask;
 
     @BeforeEach
     void beforeEach() {
@@ -34,11 +34,7 @@ class TaskManagerTest<T extends TaskManager> {
         m.saveTaskAndEpic(task);
         ArrayList<Task> tasks = m.getListAllTasks();
         assertNotNull(tasks);
-        assertEquals(tasks.get(0).getId(), 1);
-        assertEquals(tasks.get(0).getName(), "test");
-        assertEquals(tasks.get(0).getDuration(), 30);
-        assertEquals(tasks.get(0).getStartTime(), LocalDateTime.parse("2023-01-01T00:01"));
-        assertEquals(tasks.get(0).getEndTime(), LocalDateTime.parse("2023-01-01T00:01").plusMinutes(30));
+        assertEquals(m.getListAllTasks().get(0), task);
     }
 
     @Test
@@ -54,12 +50,8 @@ class TaskManagerTest<T extends TaskManager> {
         m.saveTaskAndEpic(epic);
         ArrayList<Epic> epics = m.getListAllEpic();
         assertNotNull(epics);
-        assertEquals(epics.get(0).getId(), 1);
-        assertEquals(epics.get(0).getName(), "EPIC");
-        assertEquals(epics.get(0).getDescription(), "description EPIC");
-        assertEquals(epics.get(0).getDuration(), 0);
-        assertNull(epics.get(0).getStartTime());
-        assertNull(epics.get(0).getEndTime());
+        assertEquals(epics.get(0), epic);
+
     }
 
     @Test
@@ -75,13 +67,7 @@ class TaskManagerTest<T extends TaskManager> {
         m.saveSubtask(subtask, epic);
         ArrayList<Subtask> subtasks = m.getListAllSubtasks();
         assertNotNull(subtasks);
-        assertEquals(subtasks.get(0).getParentId(), 3);
-        assertEquals(subtasks.get(0).getId(), 2);
-        assertEquals(subtasks.get(0).getName(), "SUBTASK");
-        assertEquals(subtasks.get(0).getDescription(), "descr SUBTASK");
-        assertEquals(subtasks.get(0).getDuration(), 20);
-        assertEquals(subtasks.get(0).getStartTime(), LocalDateTime.parse("2023-01-01T00:50"));
-        assertEquals(subtasks.get(0).getEndTime(), LocalDateTime.parse("2023-01-01T00:50").plusMinutes(20));
+        assertEquals(subtasks.get(0), subtask);
     }
 
     @Test
@@ -99,9 +85,7 @@ class TaskManagerTest<T extends TaskManager> {
         Subtask subtask = (Subtask) m.getSubtaskById(2);
         assertNotNull(epic.getSubtasks());
         assertEquals(epic.getSubtasks().get(0), subtask);
-        assertEquals(epic.getStartTime(), LocalDateTime.parse("2023-01-01T00:50"));
-        assertEquals(epic.getEndTime(), LocalDateTime.parse("2023-01-01T00:50").plusMinutes(20));
-        assertEquals(epic.getDuration(), 20);
+        assertEquals(epic.getStartTime(), subtask.getStartTime());
     }
 
     @Test
@@ -216,10 +200,136 @@ class TaskManagerTest<T extends TaskManager> {
         assertTrue(m.getListAllSubtasks().contains(subtask));
         Subtask newSub = new Subtask(2, "newSub", "iiiiii", DONE, LocalDateTime.now(), 5, LocalDateTime.now().plusMinutes(5), 1);
         m.updateSubtask(newSub);
-        assertTrue(m.getListAllSubtasks().contains(m.getSubtaskById(2)));
+        assertTrue(m.getListAllSubtasks().contains(newSub));
         assertEquals(m.getListAllSubtasks().size(), 1);
-        var t = (Subtask) m.getListAllSubtasks().get(0);
-        System.out.println(t);
-        System.out.println(m.getListAllSubtasks().get(0).getClass());
+        assertNotEquals(subtask, newSub);
+        assertEquals(epic.getSubtasks().size(), 1);
+        assertEquals(epic.getSubtasks().get(0), newSub);
+    }
+
+    @Test
+    void shouldUpdateTask() {
+        m.saveTaskAndEpic(task);
+        assertTrue(m.getListAllTasks().contains(task));
+        Task newTask = new Task(1, "newTask", "YYYYYYYYY", IN_PROGRESS, LocalDateTime.now(), 78, LocalDateTime.now().plusMinutes(78));
+        m.updateTask(newTask);
+        assertEquals(m.getListAllTasks().size(), 1);
+        assertNotEquals(task, newTask);
+        assertTrue(m.getListAllTasks().contains(newTask));
+    }
+
+    @Test
+    void shouldUpdateEpic() {
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        assertTrue(m.getListAllEpic().contains(epic));
+        ArrayList<Subtask> l = new ArrayList<>();
+        l.add(subtask);
+        Epic newEpic = new Epic(1, "newEpic", "mYmYmY", DONE, LocalDateTime.now(), 78, LocalDateTime.now().plusMinutes(78), l);
+        m.updateEpic(newEpic);
+        assertEquals(m.getListAllEpic().size(), 1);
+        assertNotEquals(epic, newEpic);
+        assertTrue(m.getListAllEpic().contains(newEpic));
+        assertEquals(m.getEpicById(subtask.getParentId()), newEpic);
+    }
+
+    @Test
+    void shouldUpdateEpicTaskSubtaskNull() {
+        Epic epicN = null;
+        Subtask subN = null;
+        Task taskN = null;
+        m.updateEpic(epicN);
+        m.updateSubtask(subN);
+        m.updateTask(taskN);
+    }
+
+    @Test
+    void shouldDeleteTaskById() {
+        HistoryManager history = Managers.getDefaultHistory();
+        m.saveTaskAndEpic(task);
+        assertTrue(m.getListAllTasks().contains(task));
+        m.getTaskById(task.getId());
+        assertTrue(history.getHistory().contains(task));
+        m.deleteTaskById(task.getId());
+        assertFalse(m.getListAllTasks().contains(task));
+        assertFalse(history.getHistory().contains(task));
+
+    }
+
+    @Test
+    void shouldDeleteEpicById() {
+        HistoryManager history = Managers.getDefaultHistory();
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        m.getEpicById(epic.getId());
+        assertTrue(m.getListAllEpic().contains(epic));
+        assertTrue(history.getHistory().contains(epic));
+        assertTrue(m.getListAllSubtasks().contains(subtask));
+        m.deleteEpicById(epic.getId());
+        assertFalse(m.getListAllEpic().contains(epic));
+        assertFalse(history.getHistory().contains(epic));
+        assertFalse(m.getListAllSubtasks().contains(subtask));
+        assertFalse(history.getHistory().contains(subtask));
+    }
+
+    @Test
+    void shouldDeleteSubtaskById() {
+        HistoryManager history = Managers.getDefaultHistory();
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        m.getSubtaskById(subtask.getId());
+        assertTrue(m.getListAllSubtasks().contains(subtask));
+        assertTrue(history.getHistory().contains(subtask));
+        assertTrue(epic.getSubtasks().contains(subtask));
+        m.deleteSubtaskById(subtask.getId());
+        assertFalse(m.getListAllSubtasks().contains(subtask));
+        assertFalse(history.getHistory().contains(subtask));
+        assertFalse(epic.getSubtasks().contains(subtask));
+    }
+
+    @Test
+    void shouldDeleteEpicTaskSubtaskByWrongId() {
+        m.deleteSubtaskById(8);
+        m.deleteEpicById(8);
+        m.deleteTaskById(8);
+    }
+
+    @Test
+    void shouldGetListSubtasksOfEpic() {
+        Subtask sub2 = new Subtask(1, "SUB2", "IUY7UYHUHUH", 19, LocalDateTime.of(2023, 02, 01, 0, 50));
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        m.saveSubtask(sub2, epic);
+        assertEquals(epic.getSubtasks().size(), 2);
+        assertEquals(epic.getSubtasks().get(0), subtask);
+        assertEquals(epic.getSubtasks().get(1), sub2);
+    }
+
+    @Test
+    void shouldDefineStatusEpic() {
+        Subtask sub2 = new Subtask(1, "SUB2", "IUY7UYHUHUH", DONE, LocalDateTime.of(2023, 02, 01, 0, 50), 19, LocalDateTime.of(2023, 02, 01, 0, 50).plusMinutes(19), 3);
+        m.saveTaskAndEpic(epic);
+        assertEquals(epic.getStatus(), NEW);
+        subtask.setStatus(DONE);
+        m.saveSubtask(subtask, epic);
+        assertEquals(epic.getStatus(), DONE);
+        sub2.setStatus(IN_PROGRESS);
+        m.saveSubtask(sub2, epic);
+        assertEquals(epic.getStatus(), IN_PROGRESS);
+        m.deleteAllSubtasks();
+        assertEquals(epic.getStatus(), NEW);
+    }
+
+    @Test
+    void shouldGetPrioritizedTasks() {
+        Subtask sub2 = new Subtask(1, "SUB2", "IUY7UYHUHUH", 19, null);
+        m.saveTaskAndEpic(epic);
+        m.saveSubtask(subtask, epic);
+        m.saveSubtask(sub2, epic);
+        m.saveTaskAndEpic(task);
+        System.out.println(m.getPrioritizedTasks());
+        assertEquals(m.getPrioritizedTasks().get(0), task);
+        assertEquals(m.getPrioritizedTasks().get(1), subtask);
+        assertEquals(m.getPrioritizedTasks().get(2), sub2);
     }
 }

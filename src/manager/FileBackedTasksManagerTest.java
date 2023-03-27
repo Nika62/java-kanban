@@ -1,5 +1,0 @@
-package manager;
-
-class FileBackedTasksManagerTest {
-
-}

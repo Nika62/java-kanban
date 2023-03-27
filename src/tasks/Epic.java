@@ -33,11 +33,11 @@ public class Epic extends Task {
 
     public void addSubtask(Subtask subtask) {
 
-        if (Objects.nonNull(startTime) && Objects.nonNull(endTime)) {
-            if (subtask.startTime.isBefore(startTime)) {
+        if (Objects.nonNull(subtask.startTime) && Objects.nonNull(endTime)) {
+            if (Objects.nonNull(subtask.startTime) && subtask.startTime.isBefore(startTime)) {
                 startTime = subtask.startTime;
             }
-            if (subtask.getEndTime().isAfter(endTime)) {
+            if (Objects.nonNull(subtask.endTime) && subtask.getEndTime().isAfter(endTime)) {
                 endTime = subtask.endTime;
             }
         } else {
@@ -50,9 +50,9 @@ public class Epic extends Task {
 
     public void removeSubtask(Subtask subtask) {
         if (subtasks.contains(subtask)) {
-            subtasks.remove(subtask.id);
             duration = duration - subtask.duration;
             updateEpicTime(subtask);
+            subtasks.remove(subtask);
         }
     }
 
@@ -79,11 +79,13 @@ public class Epic extends Task {
     }
 
     private void updateEpicTime(Subtask subtask) {
-        if (startTime.equals(subtask.startTime)) {
-            startTime = findNewTimeEpic("startTime");
-        }
-        if (startTime.equals(subtask.startTime)) {
-            startTime = findNewTimeEpic("endTime");
+        if (Objects.nonNull(subtask.startTime)) {
+            if (startTime.equals(subtask.startTime)) {
+                startTime = findNewTimeEpic("startTime");
+            }
+            if (endTime.equals(subtask.endTime)) {
+                endTime = findNewTimeEpic("endTime");
+            }
         }
     }
 
@@ -124,6 +126,20 @@ public class Epic extends Task {
             listToString = String.valueOf(listId);
         }
         return listToString;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Epic epic = (Epic) o;
+        return Objects.equals(subtasks, epic.subtasks);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), subtasks);
     }
 }
 

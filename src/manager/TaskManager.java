@@ -45,5 +45,6 @@ public interface TaskManager<T extends Task> {
 
     void defineStatusEpic(Epic epic);
 
+    List getPrioritizedTasks();
 
 }

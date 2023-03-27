@@ -1,6 +1,7 @@
 package tasks;
 
 import java.time.*;
+import java.util.*;
 
 import static tasks.Task.StatusList.*;
 import static tasks.TypeTask.*;
@@ -98,7 +99,16 @@ public class Task {
         this.duration = duration;
         this.startTime = startTime;
         this.status = NEW;
-        this.endTime = startTime.plusMinutes(duration);
+        this.endTime = calculateEndTime(startTime);
+    }
+
+    private LocalDateTime calculateEndTime(LocalDateTime start) {
+        if (Objects.nonNull(start)) {
+            return start.plusMinutes(duration);
+        } else {
+            return null;
+        }
+
     }
 
     @Override
@@ -109,4 +119,16 @@ public class Task {
         return task;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && duration == task.duration && Objects.equals(name, task.name) && Objects.equals(description, task.description) && status == task.status && Objects.equals(startTime, task.startTime) && Objects.equals(endTime, task.endTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, status, duration, startTime, endTime);
+    }
 }

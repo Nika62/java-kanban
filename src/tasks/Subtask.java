@@ -1,6 +1,7 @@
 package tasks;
 
 import java.time.*;
+import java.util.*;
 
 import static tasks.TypeTask.*;
 
@@ -33,7 +34,23 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
-        return id + "," + SUBTASK + "," + name + "," + description + "," + status +
-                "," + startTime.toString() + "," + duration + "," + endTime.toString() + "," + parentId;
+        String sub = id + "," + SUBTASK + "," + name + "," + description + "," + status + ",";
+        sub = startTime != null ? sub + startTime.toString() + "," + duration + "," : sub + null + "," + duration + ",";
+        sub = endTime != null ? sub + endTime.toString() + "," + parentId : sub + null + "," + parentId;
+        return sub;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Subtask subtask = (Subtask) o;
+        return parentId == subtask.parentId;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), parentId);
     }
 }
