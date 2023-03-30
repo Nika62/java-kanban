@@ -62,7 +62,7 @@ class FileBackedTasksManagerLoadTest {
 
     @Test
     void shouldLoadHistory() {
-        fileBackedTasksManager = loadFromFile(Path.of("test1/resources/test_history.csv"));
+        fileBackedTasksManager = loadFromFile(Path.of("test1/resources/test_historyLoad.csv"));
         HistoryManager historyForTest = Managers.getDefaultHistory();
         assertEquals(historyForTest.getHistory().size(), 4);
         assertEquals(historyForTest.getHistory().get(0), fileBackedTasksManager.getListEpics().get(4));

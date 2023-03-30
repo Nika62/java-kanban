@@ -9,12 +9,8 @@ U
 %src/manager/ManagerSaveException.java,b\2\b207fff14adeedd30ee8889e9bef0a17154e881c
 O
 src/manager/HistoryManager.java,f\0\f0c741df96791e27097b39b0bc018b06cb88f0a9
-E
-src/manager/Node.java,5\7\5779fb773f34f67fcc80d86d1ea96846485b8e33
 C
 testFileBackedM.csv,3\e\3e296678e94989e107d5b971b8f794392d7ef28e
-J
-test1/TaskManagerTest.java,f\2\f2c2967e24fe416402ba08ba0b686db36dc5b8de
 M
 test1/HistoryManagerTest.java,2\d\2d4f0be907adc982cd57e70fc0f8a00dc3a58fd6
 I
@@ -27,5 +23,3 @@ F
 src/tasks/Subtask.java,b\b\bbba77347ddbcc1dcca42f59542c14c2194b0659
 J
 fileBackedTasksManager.csv,3\3\33f99862f71fb07a6e656eece20a717aaf873884
-W
-'src/manager/InMemoryHistoryManager.java,2\f\2f81053c39a10e9fa7c0349eae9b01146d20c7cc
