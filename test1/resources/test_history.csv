@@ -1,0 +1,7 @@
+id,type,name,description,status,listSubtasks/parentId
+1,TASK,task,описание 1,NEW,null,0,null
+3,SUBTASK,subtask,ОПИСАНИЕ3,IN_PROGRESS,null,0,null,2
+2,EPIC,epic,описание 2,NEW,null,0,null,3
+4,EPIC,epicWithoutSubtasks,описание 4,DONE,null,0,null,
+
+4,1,2,3,

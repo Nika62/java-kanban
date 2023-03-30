@@ -185,8 +185,10 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Subtask> deleteAllSubtasks() {
         if (!listSubtasks.isEmpty()) {
             for (Epic epic : listEpics.values()) {
-                epic.getSubtasks().clear();
-                updateEpic(epic);
+                if (Objects.nonNull(epic.getSubtasks())) {
+                    epic.getSubtasks().clear();
+                    updateEpic(epic);
+                }
             }
             for (Subtask subtask : listSubtasks.values()) {
                 if (Objects.nonNull(subtask.getStartTime())) {
