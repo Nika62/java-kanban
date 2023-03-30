@@ -13,10 +13,10 @@ public class InMemoryTaskManager implements TaskManager {
     protected static final HashMap<Integer, Epic> listEpics = new HashMap<>();
     protected static final HashMap<Integer, Task> listTasks = new HashMap<>();
     protected static final HashMap<Integer, Subtask> listSubtasks = new HashMap<>();
-    protected static final Set<Task> sortedList = new TreeSet<>(new Comparator<Task>() {
+    protected static final TreeSet<Task> sortedList = new TreeSet<>(new Comparator<Task>() {
         @Override
         public int compare(Task t1, Task t2) {
-            return t2.getStartTime().isBefore(t1.getStartTime()) ? 1 : -1;
+            return t1.compareTo(t2);
         }
     });
     static HistoryManager historyManager = Managers.getDefaultHistory();
@@ -33,37 +33,47 @@ public class InMemoryTaskManager implements TaskManager {
         return listSubtasks;
     }
 
-    public void clearSortedList(Set<Task> set) {
-        sortedList.clear();
-
+    public TreeSet<Task> getSortedList() {
+        return sortedList;
     }
+
 
     protected int assignId(Task newTask) {
         newTask.setId(++taskId);
         return taskId;
     }
 
-    protected void checkFreeTime(Task newTask) {
-        if (Objects.nonNull(newTask.getStartTime())) {
-            for (Task task : sortedList) {
-                if (newTask.getStartTime().equals(task.getEndTime())) {
-                    System.out.println("Задача не создана. Выбранное время занято.");
-                    System.exit(0);
+    protected void checkFreeTime(Task newTask) throws ManagerSaveException {
+        try {
+            if (Objects.nonNull(newTask.getStartTime())) {
+                for (Task task : sortedList) {
+                    if (newTask.getStartTime().equals(task.getStartTime()) || newTask.getStartTime().equals(task.getEndTime()) &&
+                            newTask.getEndTime().equals(task.getStartTime()) || newTask.getEndTime().equals(task.getEndTime())) {
+                        throw new ManagerSaveException("Задача не сохранена, время занято");
+                    }
                 }
             }
+        } catch (ManagerSaveException e) {
+            System.out.println(e.getMessage());
         }
     }
 
     public List getPrioritizedTasks() {
-        List<Task> tasks = listTasks.values()
-                .stream()
-                .filter(e -> e.getStartTime() == null)
-                .collect(Collectors.toList());
+        List<Task> tasks = new ArrayList<>();
+        List<Subtask> sub = new ArrayList<>();
 
-        List<Subtask> sub = listSubtasks.values()
-                .stream()
-                .filter(e -> e.getStartTime() == null)
-                .collect(Collectors.toList());
+        if (!listTasks.isEmpty()) {
+            tasks = listTasks.values()
+                    .stream()
+                    .filter(e -> e.getStartTime() == null)
+                    .collect(Collectors.toList());
+        }
+        if (!listSubtasks.isEmpty()) {
+            sub = listSubtasks.values()
+                    .stream()
+                    .filter(e -> e.getStartTime() == null)
+                    .collect(Collectors.toList());
+        }
 
         ArrayList prioritizedTasks = new ArrayList();
 
@@ -150,6 +160,7 @@ public class InMemoryTaskManager implements TaskManager {
                 if (sortedList.contains(task)) {
                     sortedList.remove(task);
                 }
+                historyManager.remove(task.getId());
             }
             listTasks.clear();
 
@@ -161,9 +172,11 @@ public class InMemoryTaskManager implements TaskManager {
     public HashMap<Integer, Epic> deleteAllEpics() {
         if (!listEpics.isEmpty()) {
             if (!listSubtasks.isEmpty()) {
-                listSubtasks.clear();
+                deleteAllSubtasks();
             }
-            listEpics.clear();
+            for (int id : listEpics.keySet()) {
+                historyManager.remove(id);
+            }
         }
         return listEpics;
     }
@@ -176,12 +189,13 @@ public class InMemoryTaskManager implements TaskManager {
                 updateEpic(epic);
             }
             for (Subtask subtask : listSubtasks.values()) {
-                if (sortedList.contains(subtask)) {
+                if (Objects.nonNull(subtask.getStartTime())) {
                     sortedList.remove(subtask);
                 }
+                historyManager.remove(subtask.getId());
+            }
             }
             listSubtasks.clear();
-        }
         return listSubtasks;
     }
 
@@ -230,9 +244,11 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         if (Objects.nonNull(subtask) && listSubtasks.containsKey(subtask.getId())) {
-            checkFreeTime(subtask);
             sortedList.remove(listSubtasks.get(subtask.getId()));
-            sortedList.add(subtask);
+            if (Objects.nonNull(subtask.getStartTime())) {
+                checkFreeTime(subtask);
+                sortedList.add(subtask);
+            }
             listSubtasks.put(subtask.getId(), subtask);
             Epic epic = listEpics.get(subtask.getParentId());
             epic.updateSubtask(subtask);
@@ -243,9 +259,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteTaskById(int id) {
         if (listTasks.containsKey(id)) {
-            listTasks.remove(id);
             historyManager.remove(id);
-            sortedList.remove(id);
+            sortedList.remove(listTasks.get(id));
+            listTasks.remove(id);
         }
     }
     @Override
@@ -253,10 +269,10 @@ public class InMemoryTaskManager implements TaskManager {
         if (listSubtasks.containsKey(id)) {
             Epic epic = listEpics.get(listSubtasks.get(id).getParentId());
             epic.removeSubtask(listSubtasks.get(id));
+            sortedList.remove(listSubtasks.get(id));
             listSubtasks.remove(id);
             updateEpic(epic);
             historyManager.remove(id);
-            sortedList.remove(id);
         }
     }
     @Override

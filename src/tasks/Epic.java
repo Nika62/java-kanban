@@ -79,7 +79,7 @@ public class Epic extends Task {
     }
 
     private void updateEpicTime(Subtask subtask) {
-        if (Objects.nonNull(subtask.startTime)) {
+        if (Objects.nonNull(subtask.startTime) && Objects.nonNull(startTime)) {
             if (startTime.equals(subtask.startTime)) {
                 startTime = findNewTimeEpic("startTime");
             }

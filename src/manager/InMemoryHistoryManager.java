@@ -40,21 +40,31 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
         Node<Task> nodePrev = node.getPrev();
         Node<Task> nodeNext = node.getNext();
 
-        if (nodePrev != null && nodeNext != null) {
+        if (Objects.nonNull(nodeNext) && Objects.nonNull(nodePrev)) {
             nodePrev.setNext(nodeNext);
             nodeNext.setPrev(nodePrev);
-            node.setPrev(null);
             node.setNext(null);
-        } else if (nodePrev == null && nodeNext != null) {
+            node.setPrev(null);
+            nodeMap.remove(node.getDate().getId(), node);
+        } else if (Objects.isNull(nodePrev) && Objects.nonNull(nodeNext)) {
             headNode = nodeNext;
             headNode.setPrev(null);
             node.setNext(null);
-        } else if (nodeNext == null && nodePrev != null) {
+            node.setPrev(null);
+            nodeMap.remove(node.getDate().getId(), node);
+        } else if (Objects.isNull(nodeNext) && Objects.nonNull(nodePrev)) {
             lastNode = nodePrev;
             lastNode.setNext(null);
+            node.setNext(null);
             node.setPrev(null);
+            nodeMap.remove(node.getDate().getId(), node);
+        } else {
+            headNode = null;
+            lastNode = null;
+            node.setNext(null);
+            node.setPrev(null);
+            nodeMap.remove(node.getDate().getId(), node);
         }
-        node.setDate(null);
     }
 
     @Override
@@ -77,8 +87,8 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
     @Override
     public void remove(int id) {
         if (nodeMap.get(id) != null) {
-            Node<Task> nodeForDelete = nodeMap.get(id);
-            historyTasks.removeNode(nodeForDelete);
+
+            historyTasks.removeNode(nodeMap.get(id));
         }
     }
 }

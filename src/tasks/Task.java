@@ -6,7 +6,7 @@ import java.util.*;
 import static tasks.Task.StatusList.*;
 import static tasks.TypeTask.*;
 
-public class Task {
+public class Task implements Comparable<Task> {
     protected int id;
     protected String name;
     protected String description;
@@ -14,6 +14,14 @@ public class Task {
     protected int duration;
     protected LocalDateTime startTime;
     protected LocalDateTime endTime;
+
+    @Override
+    public int compareTo(Task o) {
+        if (id == o.getId()) {
+            return 0;
+        }
+        return startTime.isAfter(o.startTime) ? 1 : -1;
+    }
 
     public enum StatusList {
         NEW,
