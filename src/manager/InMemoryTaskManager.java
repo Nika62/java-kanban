@@ -174,9 +174,7 @@ public class InMemoryTaskManager implements TaskManager {
             if (!listSubtasks.isEmpty()) {
                 deleteAllSubtasks();
             }
-            for (int id : listEpics.keySet()) {
-                historyManager.remove(id);
-            }
+            listEpics.clear();
         }
         return listEpics;
     }

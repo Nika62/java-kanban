@@ -1,3 +1,0 @@
-id,type,name,description,status,listSubtasks/parentId
-1,TASK,task,описание таск,NEW,2001-01-01T00:00,10,2001-01-01T00:10
-1,EPIC,epic,описание эпик,NEW,2001-02-02T02:20,20,2001-02-02T02:40,

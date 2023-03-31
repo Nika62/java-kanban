@@ -80,7 +80,6 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
 
     @Override
     public List<Task> getHistory() {
-
         return historyTasks.getTasks();
     }
 
