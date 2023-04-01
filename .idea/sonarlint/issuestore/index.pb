@@ -25,3 +25,11 @@ C
 src/tasks/Task.java,3\2\3274c13c802fdd4f4c0bd72afbb851f447e32183
 I
 src/manager/Managers.java,4\b\4b79e371f7e9c8916da5a120d27cb271963f33ec
+E
+src/manager/Node.java,5\7\5779fb773f34f67fcc80d86d1ea96846485b8e33
+T
+$src/manager/InMemoryTaskManager.java,a\a\aa928e2b414d2c845d9fdad53e0c5bb8aad86dc4
+W
+'src/manager/FileBackedTasksManager.java,d\7\d797b96740c9dcaf20b02c97936b6b36be305d33
+Y
+)test1/FileBackedTasksManagerLoadTest.java,6\c\6c1ed9c7d16040b9d30bb762c2fcec648a6adf3e

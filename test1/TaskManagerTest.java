@@ -36,8 +36,6 @@ class TaskManagerTest<T extends TaskManager> {
         managerForTest.getSubtaskById(3);
         managerForTest.getSubtaskById(4);
         managerForTest.getEpicById(5);
-
-
     }
 
     @AfterEach
@@ -326,7 +324,6 @@ class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldGetHistoryInMemoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistory();
-        System.out.println("5 " + historyManager.getHistory());
         assertEquals(historyManager.getHistory().get(0), task);
         assertEquals(historyManager.getHistory().get(1), epic);
         assertEquals(historyManager.getHistory().get(2), subtask);
@@ -339,7 +336,6 @@ class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteHistoryFirstInMemoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistory();
         managerForTest.deleteTaskById(1);
-        System.out.println("t " + historyManager.getHistory());
         assertEquals(historyManager.getHistory().get(0), epic);
         assertEquals(historyManager.getHistory().get(1), subtask);
         assertEquals(historyManager.getHistory().get(2), sub2);
@@ -351,7 +347,6 @@ class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteHistoryLastInMemoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistory();
         managerForTest.deleteEpicById(5);
-        System.out.println("e5 " + historyManager.getHistory());
         assertEquals(historyManager.getHistory().get(0), task);
         assertEquals(historyManager.getHistory().get(1), epic);
         assertEquals(historyManager.getHistory().get(2), subtask);
@@ -363,7 +358,6 @@ class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteHistoryFromMiddleInMemoryManager() {
         HistoryManager historyManager = Managers.getDefaultHistory();
         managerForTest.deleteSubtaskById(3);
-        System.out.println("s 3   " + historyManager.getHistory());
         assertEquals(historyManager.getHistory().get(0), task);
         assertEquals(historyManager.getHistory().get(1), epic);
         assertEquals(historyManager.getHistory().get(2), sub2);
