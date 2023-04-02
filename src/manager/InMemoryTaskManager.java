@@ -59,27 +59,29 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     public List getPrioritizedTasks() {
-        List<Task> tasks = new ArrayList<>();
-        List<Subtask> sub = new ArrayList<>();
+        ArrayList prioritizedTasks = new ArrayList();
+        List<Task> tasks;
+        List<Subtask> sub;
+
+        prioritizedTasks.addAll(sortedList);
 
         if (!listTasks.isEmpty()) {
             tasks = listTasks.values()
                     .stream()
                     .filter(e -> e.getStartTime() == null)
                     .collect(Collectors.toList());
+
+            prioritizedTasks.addAll(tasks);
         }
         if (!listSubtasks.isEmpty()) {
             sub = listSubtasks.values()
                     .stream()
                     .filter(e -> e.getStartTime() == null)
                     .collect(Collectors.toList());
+
+            prioritizedTasks.addAll(sub);
         }
 
-        ArrayList prioritizedTasks = new ArrayList();
-
-        prioritizedTasks.addAll(sortedList);
-        prioritizedTasks.addAll(tasks);
-        prioritizedTasks.addAll(sub);
         return prioritizedTasks;
     }
 

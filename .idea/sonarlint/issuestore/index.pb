@@ -13,23 +13,15 @@ C
 testFileBackedM.csv,3\e\3e296678e94989e107d5b971b8f794392d7ef28e
 J
 fileBackedTasksManager.csv,3\3\33f99862f71fb07a6e656eece20a717aaf873884
-?
-java-kanban.iml,d\f\df5dcbbd3f931c7c23855ccec11732ab4c8544f2
 C
 src/tasks/Epic.java,0\5\050f3b5f1819e12243e13d42c13959c5e62c12b0
 =
 src/Main.java,9\2\924f089edb4af5ee45c8a9d1129cd28e2b368138
 F
 src/tasks/Subtask.java,b\b\bbba77347ddbcc1dcca42f59542c14c2194b0659
-C
-src/tasks/Task.java,3\2\3274c13c802fdd4f4c0bd72afbb851f447e32183
 I
 src/manager/Managers.java,4\b\4b79e371f7e9c8916da5a120d27cb271963f33ec
-E
-src/manager/Node.java,5\7\5779fb773f34f67fcc80d86d1ea96846485b8e33
-T
-$src/manager/InMemoryTaskManager.java,a\a\aa928e2b414d2c845d9fdad53e0c5bb8aad86dc4
+W
+'src/manager/InMemoryHistoryManager.java,2\f\2f81053c39a10e9fa7c0349eae9b01146d20c7cc
 W
 'src/manager/FileBackedTasksManager.java,d\7\d797b96740c9dcaf20b02c97936b6b36be305d33
-Y
-)test1/FileBackedTasksManagerLoadTest.java,6\c\6c1ed9c7d16040b9d30bb762c2fcec648a6adf3e

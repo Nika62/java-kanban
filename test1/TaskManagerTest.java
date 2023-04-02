@@ -10,7 +10,7 @@ import static tasks.Task.StatusList.*;
 
 class TaskManagerTest<T extends TaskManager> {
 
-    TaskManager managerForTest = new InMemoryTaskManager();
+  private TaskManager managerForTest = new InMemoryTaskManager();
     protected Task task;
     protected Epic epic;
     protected Subtask subtask;
@@ -77,12 +77,12 @@ class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldSaveSubtaskInListSubtasks() {
         assertEquals(managerForTest.getListAllSubtasks().size(), 2);
-        assertEquals(managerForTest.getListAllSubtasks().get(0), subtask);
-        assertEquals(managerForTest.getListAllSubtasks().get(1), sub2);
+        assertTrue(managerForTest.getListAllSubtasks().contains(subtask));
+        assertTrue(managerForTest.getListAllSubtasks().contains(sub2));
     }
 
     @Test
-    void shouldSaveSubtaskNullDontSave() {
+    void shouldSaveSubtaskNullNotSave() {
         Subtask subNull = null;
         managerForTest.saveSubtask(subNull, epic);
         assertFalse(managerForTest.getListAllSubtasks().contains(subNull));
@@ -95,12 +95,10 @@ class TaskManagerTest<T extends TaskManager> {
     }
 
     @Test
-    void shouldEpicWrongIdInSubtask() {
-        Epic epicWrong = new Epic("EPICw", "description EPIC");
+    void shouldSubtaskWidWrongParentIdNotSaveInEpic() {
         Subtask sub3 = new Subtask(6, "UUUYYUYU", "UYUYUYY7Y7");
-        assertNotEquals(subtask.getParentId(), epicWrong.getId());
-        managerForTest.saveSubtask(sub3, epicWrong);
-        assertFalse(epicWrong.getSubtasks().contains(sub3));
+        managerForTest.saveSubtask(sub3, epic);
+        assertFalse(epic.getSubtasks().contains(sub3));
     }
 
     @Test
@@ -222,7 +220,11 @@ class TaskManagerTest<T extends TaskManager> {
         managerForTest.updateEpic(newEpic);
         assertFalse(managerForTest.getListAllEpic().contains(epic));
         assertTrue(managerForTest.getListAllEpic().contains(newEpic));
+        assertEquals(managerForTest.getListAllEpic().get(0), newEpic);
+        assertEquals(managerForTest.getListAllEpic().size(), 2);
         assertEquals(managerForTest.getEpicById(subtask.getParentId()), newEpic);
+        assertTrue(newEpic.getSubtasks().contains(subtask));
+        assertEquals(newEpic.getSubtasks().size(), 1);
     }
 
     @Test
@@ -242,6 +244,7 @@ class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteTaskById() {
         managerForTest.deleteTaskById(1);
         assertFalse(managerForTest.getListAllTasks().contains(task));
+        assertEquals(managerForTest.getListAllTasks().size(), 0);
 
     }
 
@@ -249,16 +252,20 @@ class TaskManagerTest<T extends TaskManager> {
     void shouldDeleteEpicById() {
         managerForTest.deleteEpicById(epic.getId());
         assertFalse(managerForTest.getListAllEpic().contains(epic));
+        assertEquals(managerForTest.getListAllEpic().size(), 1);
         assertFalse(managerForTest.getListAllSubtasks().contains(subtask));
         assertFalse(managerForTest.getListAllSubtasks().contains(sub2));
+        assertEquals(managerForTest.getListAllSubtasks().size(), 0);
     }
 
     @Test
     void shouldDeleteSubtaskById() {
         managerForTest.deleteSubtaskById(subtask.getId());
         assertFalse(managerForTest.getListAllSubtasks().contains(subtask));
-        ;
+        assertEquals(managerForTest.getListAllSubtasks().size(), 1);
         assertFalse(epic.getSubtasks().contains(subtask));
+        assertEquals(epic.getSubtasks().size(), 1);
+
     }
 
     @Test
@@ -271,8 +278,8 @@ class TaskManagerTest<T extends TaskManager> {
     @Test
     void shouldGetListSubtasksOfEpic() {
         assertEquals(epic.getSubtasks().size(), 2);
-        assertEquals(epic.getSubtasks().get(0), subtask);
-        assertEquals(epic.getSubtasks().get(1), sub2);
+        assertTrue(epic.getSubtasks().contains(subtask));
+        assertTrue(epic.getSubtasks().contains(sub2));
     }
 
     @Test
@@ -284,9 +291,6 @@ class TaskManagerTest<T extends TaskManager> {
 
     @Test
     void shouldDefineStatusEpic() {
-        Epic epicWithoutSubtasks = new Epic("epicW", "EPIC without sub");
-        assertEquals(epicWithoutSubtasks.getStatus(), NEW);
-
         subtask.setStatus(IN_PROGRESS);
         managerForTest.updateEpic(epic);
         assertEquals(epic.getStatus(), IN_PROGRESS);
@@ -303,8 +307,15 @@ class TaskManagerTest<T extends TaskManager> {
         subtask.setStatus(NEW);
         managerForTest.updateSubtask(subtask);
         assertEquals(epic.getStatus(), IN_PROGRESS);
+    }
 
-
+    @Test
+    void shouldDefineStatusEpicWithoutSub() {
+        assertEquals(epicWithoutSub.getStatus(), NEW);
+        epicWithoutSub.setStatus(IN_PROGRESS);
+        assertEquals(epicWithoutSub.getStatus(), IN_PROGRESS);
+        epicWithoutSub.setStatus(DONE);
+        assertEquals(epicWithoutSub.getStatus(), DONE);
     }
 
     @Test
@@ -312,6 +323,20 @@ class TaskManagerTest<T extends TaskManager> {
         assertEquals(managerForTest.getPrioritizedTasks().get(0), task);
         assertEquals(managerForTest.getPrioritizedTasks().get(1), subtask);
         assertEquals(managerForTest.getPrioritizedTasks().get(2), sub2);
+    }
+
+    @Test
+    void shouldDefineStatusEpicDone() {
+        epic.setStatus(DONE);
+        managerForTest.updateEpic(epic);
+        assertEquals(epic.getStatus(), NEW);
+        assertEquals(epic.getSubtasks().get(0).getStatus(), NEW);
+
+        subtask.setStatus(IN_PROGRESS);
+        managerForTest.updateSubtask(subtask);
+        epic.setStatus(DONE);
+        managerForTest.updateEpic(epic);
+        assertEquals(epic.getStatus(), IN_PROGRESS);
     }
 
     @Test

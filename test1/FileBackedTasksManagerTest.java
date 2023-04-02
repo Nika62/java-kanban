@@ -10,9 +10,9 @@ import static manager.FileBackedTasksManager.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static tasks.Task.StatusList.*;
 
-class FileBackedTasksManagerLoadTest {
-    FileBackedTasksManager fileBackedTasksManager;
-    FileBackedTasksManager fileBackedTasksManagerSaveTest;
+class FileBackedTasksManagerTest {
+    private FileBackedTasksManager fileBackedTasksManager;
+    private FileBackedTasksManager fileBackedTasksManagerSaveTest;
 
     @BeforeEach
     void beforeEach() {
@@ -119,7 +119,6 @@ class FileBackedTasksManagerLoadTest {
         assertEquals(historyForTest.getHistory().get(2), fileBackedTasksManager.getListTasks().get(3));
         assertEquals(historyForTest.getHistory().get(3), fileBackedTasksManager.getListEpics().get(4));
     }
-
     @Test
     void shouldHistoryRemoveFirst() {
         fileBackedTasksManagerSaveTest.deleteEpicById(4);
