@@ -10,11 +10,11 @@ public interface TaskManager<T extends Task> {
 
     void saveSubtask(Subtask subtask, Epic epic);
 
-    ArrayList<Epic> getListAllEpic();
+    ArrayList<Epic> getListAllEpic();// +
 
-    ArrayList<Subtask> getListAllSubtasks();
+    ArrayList<Subtask> getListAllSubtasks();// +
 
-    ArrayList<Task> getListAllTasks();
+    ArrayList<Task> getListAllTasks();// +
 
     HashMap<Integer, Task> deleteAllTasks();
 
@@ -22,12 +22,12 @@ public interface TaskManager<T extends Task> {
 
     HashMap<Integer, Subtask> deleteAllSubtasks();
 
-    T getTaskById(int id);
+    T getTaskById(int id);// +
 
 
-    T getEpicById(int id);
+    T getEpicById(int id);// +
 
-    T getSubtaskById(int id);
+    T getSubtaskById(int id);// +
 
     void updateTask(Task task);
 
@@ -45,6 +45,6 @@ public interface TaskManager<T extends Task> {
 
     void defineStatusEpic(Epic epic);
 
-    List getPrioritizedTasks();
+    List getPrioritizedTasks();//++
 
 }

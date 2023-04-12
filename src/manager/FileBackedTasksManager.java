@@ -13,7 +13,6 @@ import static tasks.TypeTask.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
     protected final File file;
-
     public FileBackedTasksManager(File file) {
         this.file = file;
     }
