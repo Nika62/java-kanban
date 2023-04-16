@@ -6,15 +6,15 @@ import java.util.*;
 
 public interface TaskManager<T extends Task> {
 
-    void saveTaskAndEpic(Task task);
+    boolean saveTaskAndEpic(Task task);
 
-    void saveSubtask(Subtask subtask, Epic epic);
+    boolean saveSubtask(Subtask subtask, Epic epic);
 
-    ArrayList<Epic> getListAllEpic();// +
+    ArrayList<Epic> getListAllEpic();
 
-    ArrayList<Subtask> getListAllSubtasks();// +
+    ArrayList<Subtask> getListAllSubtasks();
 
-    ArrayList<Task> getListAllTasks();// +
+    ArrayList<Task> getListAllTasks();
 
     HashMap<Integer, Task> deleteAllTasks();
 
@@ -22,18 +22,18 @@ public interface TaskManager<T extends Task> {
 
     HashMap<Integer, Subtask> deleteAllSubtasks();
 
-    T getTaskById(int id);// +
+    T getTaskById(int id);
 
 
-    T getEpicById(int id);// +
+    T getEpicById(int id);
 
-    T getSubtaskById(int id);// +
+    T getSubtaskById(int id);
 
-    void updateTask(Task task);
+    boolean updateTask(Task task);
 
-    void updateEpic(Epic epic);
+    boolean updateEpic(Epic epic);
 
-    void updateSubtask(Subtask subtask);
+    boolean updateSubtask(Subtask subtask);
 
     public void deleteTaskById(int id);
 
@@ -43,8 +43,6 @@ public interface TaskManager<T extends Task> {
 
     ArrayList<T> getListSubtasksOfEpic(Epic epic);
 
-    void defineStatusEpic(Epic epic);
-
-    List getPrioritizedTasks();//++
+    List getPrioritizedTasks();
 
 }

@@ -4,7 +4,6 @@ import tasks.*;
 
 import java.io.*;
 import java.nio.charset.*;
-import java.nio.file.*;
 import java.time.*;
 import java.util.*;
 
@@ -12,39 +11,55 @@ import static tasks.Task.StatusList.*;
 import static tasks.TypeTask.*;
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
-    protected final File file;
-    public FileBackedTasksManager(File file) {
-        this.file = file;
+    private String path;
+
+    public FileBackedTasksManager(String path) {
+        this.path = path;
     }
 
     @Override
-    public void saveTaskAndEpic(Task task) {
-        super.saveTaskAndEpic(task);
-        save();
+    public boolean saveTaskAndEpic(Task task) {
+        if (super.saveTaskAndEpic(task)) {
+            save();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void updateTask(Task task) {
-        super.updateTask(task);
-        save();
+    public boolean updateTask(Task task) {
+        if (super.updateTask(task)) {
+            save();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void updateEpic(Epic epic) {
-        super.updateEpic(epic);
-        save();
+    public boolean updateEpic(Epic epic) {
+        if (super.updateEpic(epic)) {
+            save();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask) {
-        super.updateSubtask(subtask);
-        save();
+    public boolean updateSubtask(Subtask subtask) {
+        if (super.updateSubtask(subtask)) {
+            save();
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public void saveSubtask(Subtask subtask, Epic epic) {
-        super.saveSubtask(subtask, epic);
-        save();
+    public boolean saveSubtask(Subtask subtask, Epic epic) {
+        if (super.saveSubtask(subtask, epic)) {
+            save();
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -87,7 +102,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     }
 
     private void writeHeader() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, StandardCharsets.UTF_8))) {
             String header = "id,type,name,description,status,listSubtasks/parentId";
             writer.write(header + System.lineSeparator());
 
@@ -96,9 +111,9 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    private void save() {
+    protected void save() {
         writeHeader();
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(path, true))) {
             saveListTasksInFile(writer, listTasks);
             saveListTasksInFile(writer, listSubtasks);
             saveListTasksInFile(writer, listEpics);
@@ -128,12 +143,11 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         }
     }
 
-    public static FileBackedTasksManager loadFromFile(Path path) throws ManagerSaveException {
+    public static FileBackedTasksManager loadFromFile(String path) throws ManagerSaveException {
 
-        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager((path).toFile());
+        FileBackedTasksManager fileBackedTasksManager = new FileBackedTasksManager(path);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(path.toFile(), StandardCharsets.UTF_8))) {
-
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileBackedTasksManager.path))) {
 
             while (reader.ready()) {
 

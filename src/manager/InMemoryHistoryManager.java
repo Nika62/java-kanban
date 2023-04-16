@@ -9,6 +9,7 @@ public class InMemoryHistoryManager<T extends Task> implements HistoryManager {
     private Node<Task> headNode;
     private Node<Task> lastNode;
 
+
     private void linkLast(Task task) {
 
         if (headNode == null) {
