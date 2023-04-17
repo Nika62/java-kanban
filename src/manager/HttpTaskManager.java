@@ -20,7 +20,6 @@ public class HttpTaskManager extends FileBackedTasksManager {
     }
 
     @Override
-
     protected void save() {
         try {
             if (!listTasks.isEmpty()) {
@@ -46,7 +45,7 @@ public class HttpTaskManager extends FileBackedTasksManager {
                         .collect(Collectors.toList());
                 client.put("sorted", gson.toJson(list));
             }
-        } catch (Exception e) {
+        } catch (ManagerSaveException e) {
             System.out.println(e.getMessage());
         }
     }

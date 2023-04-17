@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.*;
+import manager.*;
 
 import java.io.*;
 import java.net.*;
@@ -26,13 +27,18 @@ public class KVTaskClient {
         API_TOKEN = response.body();
     }
 
-    public void put(String key, String json) throws IOException, InterruptedException {
+    public void put(String key, String json) throws ManagerSaveException {
+
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         URI uri = URI.create(url + "/save/" + key + "/?API_TOKEN=" + API_TOKEN);
         HttpRequest request = HttpRequest.newBuilder().uri(uri).POST(body).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        if (response.statusCode() != 200) {
-            System.out.println("Сохранение не выполнено");
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            if (response.statusCode() != 200) {
+                System.out.println("Сохранение не выполнено");
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ManagerSaveException("Ошибка при сохранен: " + e.getMessage());
         }
     }
 
