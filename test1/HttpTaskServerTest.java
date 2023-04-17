@@ -9,6 +9,7 @@ import java.net.*;
 import java.net.http.*;
 import java.time.*;
 
+import static java.net.HttpURLConnection.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpTaskServerTest {
@@ -67,7 +68,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(manager.getListAllTasks()));
     }
 
@@ -76,7 +77,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtask/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(manager.getListAllSubtasks()));
     }
 
@@ -85,7 +86,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(manager.getListAllEpic()));
     }
 
@@ -94,7 +95,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/?id=2");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(epicForTestServer));
     }
 
@@ -103,7 +104,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/?id=1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -111,7 +112,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtask/?id=3");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(subtaskForTestServer));
     }
 
@@ -120,7 +121,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/?id=8");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -128,7 +129,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/?id=1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(taskForTestServer));
     }
 
@@ -137,7 +138,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/?id=11");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -145,7 +146,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtasksepic/?id=2");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(epicForTestServer.getSubtasks()));
     }
 
@@ -154,7 +155,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtasksepic/?id=5");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -162,7 +163,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/prioritized/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).GET().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), gson.toJson(manager.getPrioritizedTasks()));
     }
 
@@ -174,7 +175,7 @@ class HttpTaskServerTest {
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Задача успешно сохранена");
         assertEquals(manager.getListAllTasks().size(), 2);
 
@@ -188,7 +189,7 @@ class HttpTaskServerTest {
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Задача успешно обновлена");
         assertEquals(((Task) manager.getListAllTasks().get(0)).getDescription(), "UPDATE");
     }
@@ -201,7 +202,7 @@ class HttpTaskServerTest {
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Эпик успешно сохранен");
         assertEquals(manager.getListAllEpic().size(), 3);
     }
@@ -214,7 +215,7 @@ class HttpTaskServerTest {
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Эпик успешно обновлен");
         assertEquals(((Epic) manager.getListAllEpic().get(0)).getDescription(), "UPDATE");
     }
@@ -227,7 +228,7 @@ class HttpTaskServerTest {
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Подзадача успешно сохранена");
         assertEquals(manager.getListAllSubtasks().size(), 3);
     }
@@ -240,7 +241,7 @@ class HttpTaskServerTest {
         final HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest request = HttpRequest.newBuilder().uri(url).header("Accept", "application/json").POST(body).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertEquals(response.body(), "Подзадача успешно обновлена");
         assertEquals(((Subtask) manager.getListAllSubtasks().get(0)).getDescription(), "UPDATE");
     }
@@ -250,7 +251,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertTrue(manager.deleteAllTasks().isEmpty());
     }
 
@@ -259,7 +260,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/?id=1");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertFalse(manager.getListAllTasks().contains(taskForTestServer));
     }
 
@@ -268,7 +269,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/task/?id=12");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -276,7 +277,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtask/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertTrue(manager.deleteAllSubtasks().isEmpty());
     }
 
@@ -285,7 +286,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtask/?id=3");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertFalse(manager.getListAllSubtasks().contains(subtaskForTestServer));
     }
 
@@ -294,7 +295,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/subtask/?id=12");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 
     @Test
@@ -302,7 +303,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertTrue(manager.deleteAllEpics().isEmpty());
     }
 
@@ -311,7 +312,7 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/?id=2");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 200);
+        assertEquals(response.statusCode(), HTTP_OK);
         assertFalse(manager.getListAllEpic().contains(epicForTestServer));
     }
 
@@ -320,6 +321,6 @@ class HttpTaskServerTest {
         URI url = URI.create("http://localhost:8080/tasks/epic/?id=12");
         HttpRequest request = HttpRequest.newBuilder().uri(url).DELETE().build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        assertEquals(response.statusCode(), 404);
+        assertEquals(response.statusCode(), HTTP_NOT_FOUND);
     }
 }

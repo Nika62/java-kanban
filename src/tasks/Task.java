@@ -36,11 +36,9 @@ public class Task implements Comparable<Task> {
     public int getId() {
         return id;
     }
-
     public void setId(int id) {
         this.id = id;
     }
-
     public String getName() {
         return name;
     }

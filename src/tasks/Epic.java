@@ -8,8 +8,6 @@ import static tasks.TypeTask.*;
 
 public class Epic extends Task {
     protected ArrayList<Subtask> subtasks = new ArrayList();
-
-
     public Epic(String name, String description) {
         super(name, description);
         this.status = NEW;
